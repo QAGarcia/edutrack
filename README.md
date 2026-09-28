@@ -103,6 +103,7 @@ A lista completa, com os cenários preparados para teste, está em [docs/massa-d
 - Header `X-Request-Id` em toda resposta, para correlacionar a falha do teste com o log do servidor.
 - Interface acessível: labels reais, `role`s ARIA, diálogos com `role="dialog"` e alguns `data-testid` onde não há semântica.
 - Especificação completa: **[docs/regras-de-negocio.md](docs/regras-de-negocio.md)** (65 regras numeradas).
+- Plano de testes: **[docs/plano-de-testes.md](docs/plano-de-testes.md)**, com análise de risco, técnicas aplicadas (valor limite, tabela de decisão, transição de estados, matriz de permissões), 139 casos rastreáveis às regras e hipóteses de defeito levantadas na leitura do código.
 
 ### Documentação da API (OpenAPI 3.0)
 
