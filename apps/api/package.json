@@ -1,0 +1,49 @@
+{
+  "name": "@edutrack/api",
+  "version": "2.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "nest start --watch",
+    "build": "nest build",
+    "start": "node dist/main.js",
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint \"src/**/*.ts\"",
+    "typeorm": "typeorm-ts-node-commonjs -d src/database/data-source.ts",
+    "db:migrate": "npm run typeorm -- migration:run",
+    "db:generate": "npm run typeorm -- migration:generate",
+    "db:seed": "ts-node src/database/cli/seed.ts",
+    "db:reset": "ts-node src/database/cli/reset.ts"
+  },
+  "dependencies": {
+    "@nestjs/common": "^11.2.6",
+    "@nestjs/core": "^11.2.6",
+    "@nestjs/jwt": "^11.0.2",
+    "@nestjs/platform-express": "^11.2.6",
+    "@nestjs/serve-static": "^5.0.5",
+    "@nestjs/swagger": "^11.4.7",
+    "@nestjs/throttler": "^6.7.1",
+    "@nestjs/typeorm": "^11.0.3",
+    "bcryptjs": "^3.0.3",
+    "class-transformer": "^0.5.1",
+    "class-validator": "^0.15.1",
+    "dotenv": "^18.0.4",
+    "helmet": "^8.3.0",
+    "pg": "^8.23.0",
+    "reflect-metadata": "^0.2.2",
+    "rxjs": "^7.8.2",
+    "typeorm": "^0.3.31",
+    "zod": "^4.6.5"
+  },
+  "devDependencies": {
+    "@nestjs/cli": "^11.0.24",
+    "@nestjs/schematics": "^11.1.0",
+    "@types/bcryptjs": "^2.4.6",
+    "@types/express": "^5.0.6",
+    "@types/node": "^22.20.4",
+    "eslint": "^9.39.5",
+    "globals": "^17.12.0",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.9.3",
+    "typescript-eslint": "^8.70.1"
+  }
+}

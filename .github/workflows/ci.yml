@@ -1,0 +1,53 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  quality:
+    name: Lint, tipos e build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version-file: .nvmrc, cache: npm }
+      - run: npm ci
+      - run: npm run lint
+      - run: npm run typecheck
+      - run: npm run build
+
+  smoke:
+    name: Smoke (migrations + seed + health)
+    needs: quality
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env: { POSTGRES_USER: edutrack, POSTGRES_PASSWORD: edutrack, POSTGRES_DB: edutrack }
+        ports: ["5432:5432"]
+        options: --health-cmd "pg_isready -U edutrack" --health-interval 3s --health-retries 20
+    env:
+      DATABASE_URL: postgresql://edutrack:edutrack@localhost:5432/edutrack
+      JWT_SECRET: ci-secret-with-enough-length
+      ENABLE_TEST_ROUTES: "true"
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version-file: .nvmrc, cache: npm }
+      - run: npm ci
+      - run: npm run build
+      - run: npm run db:reset
+      - name: Sobe a aplicação e checa saúde
+        run: |
+          npm start &
+          npx --yes wait-on@8 http://localhost:3000/api/health -t 60000
+          curl -fsS http://localhost:3000/api/health
+          curl -fsS "http://localhost:3000/api/courses?limit=1" > /dev/null
+          curl -fsS http://localhost:3000/docs/json | node -e "const s=JSON.parse(require('fs').readFileSync(0));if(!s.openapi||!Object.keys(s.paths).length)process.exit(1);console.log('OpenAPI ok:',Object.keys(s.paths).length,'paths')"
+          curl -fsS http://localhost:3000/ | grep -q "<div id=\"root\">"
